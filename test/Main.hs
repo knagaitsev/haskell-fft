@@ -4,7 +4,7 @@ import Test.HUnit
 
 import HaskellFFT
 
-allClose :: [Float] -> [Float] -> Float -> Bool
+allClose :: (Ord a, Num a) => [a] -> [a] -> a -> Bool
 allClose [] [] _ = True
 allClose (a:as) (b:bs) threshold = ((abs $ a - b) <= threshold) && (allClose as bs threshold)
 allClose _ _ _ = False

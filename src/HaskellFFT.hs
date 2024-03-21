@@ -1,7 +1,7 @@
 module HaskellFFT (dftNaive, fft) where
 
-dftNaive :: Int -> Int
-dftNaive a = a + 1
+dftNaive :: [Float] -> [Float]
+dftNaive a = a
 
 fft :: Int -> Int
 fft a = a + 1
