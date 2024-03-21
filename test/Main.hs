@@ -4,13 +4,22 @@ import Test.HUnit
 
 import HaskellFFT
 
-testAddition :: Test
-testAddition = TestCase $ do
-    assertEqual "1 + 1 should be 2" 2 (1 + 1)
+allClose :: [Float] -> [Float] -> Float -> Bool
+allClose [] [] _ = True
+allClose (a:as) (b:bs) threshold = ((abs $ a - b) <= threshold) && (allClose as bs threshold)
+allClose _ _ _ = False
 
-testSubtraction :: Test
-testSubtraction = TestCase $ do
-    assertEqual "1 - 1 should be 0" 0 (1 - 1)
+testAllClose1 :: Test
+testAllClose1 = TestCase $ do
+    assertBool "Vals should be all close" $ allClose [10, 3] [10, 3] 0.1
+
+testAllClose2 :: Test
+testAllClose2 = TestCase $ do
+    assertBool "Vals should not be all close" $ not $ allClose [10, 3] [10, 3.2] 0.1
+
+testAllClose3 :: Test
+testAllClose3 = TestCase $ do
+    assertBool "Vals of different lengths should not be all close" $ not $ allClose [10, 3] [10] 0.1
 
 main :: IO Counts
-main = runTestTT $ TestList [testAddition, testSubtraction]
+main = runTestTT $ TestList [testAllClose1, testAllClose2, testAllClose3]
