@@ -1,4 +1,4 @@
-module HaskellFFT.Util (allClose, createLinspace, getElem, setElem) where
+module HaskellFFT.Util (allClose, createLinspace, getElem, setElem, distFromPow2, padPow2) where
 
 allClose :: (Ord a, Num a) => [a] -> [a] -> a -> Bool
 allClose [] [] _ = True
@@ -26,3 +26,19 @@ setElem :: [a] -> Int -> a -> [a]
 setElem [] _ _ = []
 setElem (_:xs) 0 v = v : xs
 setElem (x:xs) n v = x : (setElem xs (n - 1) v)
+
+distFromPow2Iter :: Int -> Int -> Int
+distFromPow2Iter num comp
+    | num <= comp = comp - num
+    | otherwise = distFromPow2Iter num (comp * 2)
+
+distFromPow2 :: Int -> Int
+distFromPow2 num = distFromPow2Iter num 1
+
+pad :: [a] -> a -> Int -> [a]
+pad x padVal n = x ++ (replicate n padVal)
+
+padPow2 :: [a] -> a -> [a]
+padPow2 x padVal = do
+    let dist = distFromPow2(length x)
+    pad x padVal dist

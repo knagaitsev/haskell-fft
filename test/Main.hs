@@ -86,6 +86,20 @@ testDftIdftNaive1 = TestCase $ do
     let realRes = map realPart idftRes
     assertBool "dft followed by idft is correct" $ allClose realRes realInput 0.001
 
+testDistFromPow2 :: Test
+testDistFromPow2 = TestCase $ do
+    let n = 53
+    let dist = distFromPow2 n
+    let expected = 64 - n
+    assertEqual "dist from pow2" dist expected
+
+testPadPow2 :: Test
+testPadPow2 = TestCase $ do
+    let vals = [1, 2, 3, 4, 5]
+    let padded = padPow2 vals 0
+    let expected = [1, 2, 3, 4, 5, 0, 0, 0]
+    assertEqual "padded correctly" padded expected
+
 main :: IO Counts
 main = do
     -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
@@ -106,4 +120,6 @@ main = do
                           testSetElem2,
                           testDftNaive1,
                           testDftNaive2,
-                          testDftIdftNaive1]
+                          testDftIdftNaive1,
+                          testDistFromPow2,
+                          testPadPow2]
