@@ -75,6 +75,17 @@ testDftNaive2 = TestCase $ do
     let expected = setElem (setElem zeros (elemCount - 3) halfElemCount) 3 halfElemCount
     assertBool "dft naive cos fails" $ allClose realRes expected 0.001
 
+testDftIdftNaive1 :: Test
+testDftIdftNaive1 = TestCase $ do
+    let elemCount = 100
+    let zeros = replicate elemCount 0
+    let realInput = setElem zeros 2 1
+    let input = map (\x -> x :+ 0) realInput
+    let dftRes = dftNaive input
+    let idftRes = idftNaive dftRes
+    let realRes = map realPart idftRes
+    assertBool "dft followed by idft is correct" $ allClose realRes realInput 0.001
+
 main :: IO Counts
 main = do
     -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
@@ -94,4 +105,5 @@ main = do
                           testSetElem1,
                           testSetElem2,
                           testDftNaive1,
-                          testDftNaive2]
+                          testDftNaive2,
+                          testDftIdftNaive1]
