@@ -8,7 +8,7 @@ dftNaiveSum kInt nInt lenInt (x:xs) = do
     let k = fromIntegral kInt
     let n = fromIntegral nInt
     let len = fromIntegral lenInt
-    let v1 = x * (exp (0 :+ (2 * pi * k * n / len)))
+    let v1 = x * (exp (0 :+ (-2 * pi * k * n / len)))
     let v2 = (dftNaiveSum kInt (nInt + 1) lenInt xs)
     v1 + v2
 

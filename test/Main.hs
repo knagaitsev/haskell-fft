@@ -22,9 +22,18 @@ testCreateLinspace1 = TestCase $ do
     let x = createLinspace 4 0 2
     assertBool "Linspace is incorrect" $ allClose x [0, 0.5, 1, 1.5] 0.01
 
+testDftNaive1 :: Test
+testDftNaive1 = TestCase $ do
+    let linspace = createLinspace 100 0 (2 * pi)
+    let imagCos = map (\x -> (cos(x) :+ 0)) linspace
+    -- putStrLn $ show imagCos
+    let dftRes = dftNaive imagCos
+    putStrLn $ show dftRes
+    assertBool "Linspace is incorrect" True -- allClose dftRes [0, 0.5, 1, 1.5] 0.01
+
 main :: IO Counts
 main = do
     -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
     let x = createLinspace 5 0 (2 * pi)
     putStrLn $ show x
-    runTestTT $ TestList [testAllClose1, testAllClose2, testAllClose3, testCreateLinspace1]
+    runTestTT $ TestList [testAllClose1, testAllClose2, testAllClose3, testCreateLinspace1, testDftNaive1]
