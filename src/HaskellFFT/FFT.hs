@@ -1,4 +1,4 @@
-module HaskellFFT.FFT (dftNaive, idftNaive, fft) where
+module HaskellFFT.FFT (dftNaive, idftNaive, fft, ifft) where
 
 import Data.Complex
 import HaskellFFT.Util
@@ -59,3 +59,23 @@ fftIter ks xs = do
 -- of log(n) * k (where k = n)
 fft :: RealFloat a => [Complex a] -> [Complex a]
 fft xs = fftIter [0..(length xs - 1)] xs
+
+ifftSum :: RealFloat a => [Complex a] -> [Complex a] -> [Complex a] -> [Complex a]
+ifftSum evenElems factors oddElems = zipWith (+) evenElems $ zipWith (*) factors oddElems
+
+ifftIter :: RealFloat a => [Int] -> [Complex a] -> [Complex a]
+ifftIter ks [] = [] -- bad
+ifftIter ks [x] = replicate (length ks) x
+ifftIter ks xs = do
+    let evenElems = evenIdxs xs
+    let oddElems = oddIdxs xs
+    let factors = map (\k -> exp(0 :+ (2 * pi * (fromIntegral k) / fromIntegral (length xs)))) ks
+    let evenRes = ifftIter ks evenElems
+    let oddRes = ifftIter ks oddElems
+    ifftSum evenRes factors oddRes
+
+-- Currently ifft only operates on powers of 2
+ifft :: RealFloat a => [Complex a] -> [Complex a]
+ifft xs = do 
+    let res = ifftIter [0..(length xs - 1)] xs
+    map (\sum -> ((1 / fromIntegral (length xs)) :+ 0) * sum) res

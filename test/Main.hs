@@ -139,7 +139,43 @@ testFft1 = TestCase $ do
     let realRes = map realPart fftRes
     let zeros = replicate elemCount 0
     let expected = setElem (setElem zeros (elemCount - 1) halfElemCount) 1 halfElemCount
-    assertBool "dft naive cos fails" $ allClose realRes expected 0.001
+    assertBool "fft cos fails" $ allClose realRes expected 0.001
+
+testFft2 :: Test
+testFft2 = TestCase $ do
+    let elemCount = 128
+    let halfElemCount = 0.5 * fromIntegral elemCount
+    let linspace = createLinspace elemCount 0 (2 * pi)
+    let imagCos = map (\x -> (cos(3 * x) :+ 0)) linspace
+    let fftRes = fft imagCos
+    let realRes = map realPart fftRes
+    let zeros = replicate elemCount 0
+    let expected = setElem (setElem zeros (elemCount - 3) halfElemCount) 3 halfElemCount
+    assertBool "fft cos fails" $ allClose realRes expected 0.001
+
+testFftIfft1 :: Test
+testFftIfft1 = TestCase $ do
+    let elemCount = 128
+    let zeros = replicate elemCount 0
+    let realInput = setElem zeros 2 1
+    let input = map (\x -> x :+ 0) realInput
+    let fftRes = fft input
+    let ifftRes = ifft fftRes
+    let realRes = map realPart ifftRes
+    assertBool "fft followed by ifft is correct" $ allClose realRes realInput 0.001
+
+
+testFftIfft2 :: Test
+testFftIfft2 = TestCase $ do
+    let elemCount = 100
+    let linspace = createLinspace elemCount 0 (2 * pi)
+    let realInputUnpadded = map (\x -> cos (2 * x)) linspace
+    let realInput = padPow2 realInputUnpadded 0
+    let input = map (\x -> x :+ 0) realInput
+    let fftRes = fft input
+    let ifftRes = ifft fftRes
+    let realRes = map realPart ifftRes
+    assertBool "fft followed by ifft is correct" $ allClose realRes realInput 0.001
 
 main :: IO Counts
 main = do
@@ -167,4 +203,7 @@ main = do
                           testDftIdftNaivePadded,
                           testEvenIdxs,
                           testOddIdxs,
-                          testFft1]
+                          testFft1,
+                          testFft2,
+                          testFftIfft1,
+                          testFftIfft2]
