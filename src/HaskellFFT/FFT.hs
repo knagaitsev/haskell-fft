@@ -39,7 +39,6 @@ idftNaiveIter n xs = do
 idftNaive :: RealFloat a => [Complex a] -> [Complex a]
 idftNaive xs = idftNaiveIter (length xs) xs
 
-
 -- do dftNaive if number of elements is <= 3
 fft :: RealFloat a => [Complex a] -> [Complex a]
 fft a = a

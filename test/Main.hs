@@ -100,6 +100,21 @@ testPadPow2 = TestCase $ do
     let expected = [1, 2, 3, 4, 5, 0, 0, 0]
     assertEqual "padded correctly" padded expected
 
+testDftIdftNaivePadded :: Test
+testDftIdftNaivePadded = TestCase $ do
+    let elemCount = 50
+    let halfElemCount = 0.5 * fromIntegral elemCount
+    let linspace = createLinspace elemCount 0 (2 * pi)
+    let imagCos = map (\x -> (cos(x) :+ 0)) linspace
+    let padded = padPow2 imagCos (0 :+ 0)
+    let dftRes = dftNaive padded
+    let realDftRes = map realPart dftRes
+    let idftRes = idftNaive dftRes
+    let realIdftRes = map realPart idftRes
+    let expected = map realPart padded
+    -- putStrLn $ show realIdftRes
+    assertBool "dft idft naive" $ allClose realIdftRes expected 0.001
+
 main :: IO Counts
 main = do
     -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
@@ -122,4 +137,5 @@ main = do
                           testDftNaive2,
                           testDftIdftNaive1,
                           testDistFromPow2,
-                          testPadPow2]
+                          testPadPow2,
+                          testDftIdftNaivePadded]
