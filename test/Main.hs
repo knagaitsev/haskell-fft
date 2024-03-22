@@ -21,19 +21,23 @@ testAllClose3 :: Test
 testAllClose3 = TestCase $ do
     assertBool "Vals of different lengths should not be all close" $ not $ allClose [10, 3] [10] 0.1
 
--- createLinspace :: RealFloat a => Int -> Int -> a -> a -> [a]
--- createLinspace 0 _ _ _ = []
--- createLinspace n tot a b = 
+createLinspaceIter :: RealFloat a => Int -> Int -> a -> a -> [a]
+createLinspaceIter 0 _ _ _ = []
+createLinspaceIter n tot a b = do
+    let x = a + (b - a) * (fromIntegral (tot - n)) / (fromIntegral (tot))
+    x : createLinspaceIter (n - 1) tot a b
 
--- createComplexSine :: Int -> Int -> [Complex a]
--- createComplexSine 0 tot = []
--- createComplexSine n tot = do
---     let x = 2 * pi * (fromIntegral (tot - n)) / (fromIntegral (tot))
---     let val = sin(x)
---     let complex = ((val) :+ 0)
---     complex : createComplexSineIter (n - 1) tot
+createLinspace :: RealFloat a => Int -> a -> a -> [a]
+createLinspace n = createLinspaceIter n n
+
+testCreateLinspace1 :: Test
+testCreateLinspace1 = TestCase $ do
+    let x = createLinspace 4 0 2
+    assertBool "Linspace is incorrect" $ allClose x [0, 0.5, 1, 1.5] 0.01
 
 main :: IO Counts
 main = do
-    putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
-    runTestTT $ TestList [testAllClose1, testAllClose2, testAllClose3]
+    -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
+    let x = createLinspace 5 0 (2 * pi)
+    putStrLn $ show x
+    runTestTT $ TestList [testAllClose1, testAllClose2, testAllClose3, testCreateLinspace1]
