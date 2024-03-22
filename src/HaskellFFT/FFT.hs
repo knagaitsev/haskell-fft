@@ -1,6 +1,7 @@
 module HaskellFFT.FFT (dftNaive, idftNaive, fft) where
 
 import Data.Complex
+import HaskellFFT.Util
 
 dftNaiveSum :: RealFloat a => Int -> Int -> Int -> [Complex a] -> Complex a
 dftNaiveSum k n len [] = 0 :+ 0
@@ -39,6 +40,22 @@ idftNaiveIter n xs = do
 idftNaive :: RealFloat a => [Complex a] -> [Complex a]
 idftNaive xs = idftNaiveIter (length xs) xs
 
--- do dftNaive if number of elements is <= 3
+fftSum :: RealFloat a => [Complex a] -> [Complex a] -> [Complex a] -> [Complex a]
+fftSum evenElems factors oddElems = zipWith (+) evenElems $ zipWith (*) factors oddElems
+
+fftIter :: RealFloat a => [Int] -> [Complex a] -> [Complex a]
+fftIter ks [] = [] -- bad
+fftIter ks [x] = replicate (length ks) x
+fftIter ks xs = do
+    let evenElems = evenIdxs xs
+    let oddElems = oddIdxs xs
+    let factors = map (\k -> exp(0 :+ (-2 * pi * (fromIntegral k) / fromIntegral (length xs)))) ks
+    let evenRes = fftIter ks evenElems
+    let oddRes = fftIter ks oddElems
+    fftSum evenRes factors oddRes
+
+-- Currently fft only operates on powers of 2
+-- Idea of fft divide-and-conquer: do k operations at each phase for a total
+-- of log(n) * k (where k = n)
 fft :: RealFloat a => [Complex a] -> [Complex a]
-fft a = a
+fft xs = fftIter [0..(length xs - 1)] xs

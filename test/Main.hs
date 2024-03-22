@@ -115,6 +115,32 @@ testDftIdftNaivePadded = TestCase $ do
     -- putStrLn $ show realIdftRes
     assertBool "dft idft naive" $ allClose realIdftRes expected 0.001
 
+testEvenIdxs :: Test
+testEvenIdxs = TestCase $ do
+    let input = [0, 1, 2, 3, 4, 5]
+    let res = evenIdxs input
+    let expected = [0, 2, 4]
+    assertEqual "evenIdxs" res expected
+
+testOddIdxs :: Test
+testOddIdxs = TestCase $ do
+    let input = [0, 1, 2, 3, 4, 5]
+    let res = oddIdxs input
+    let expected = [1, 3, 5]
+    assertEqual "oddIdxs" res expected
+
+testFft1 :: Test
+testFft1 = TestCase $ do
+    let elemCount = 128
+    let halfElemCount = 0.5 * fromIntegral elemCount
+    let linspace = createLinspace elemCount 0 (2 * pi)
+    let imagCos = map (\x -> (cos(x) :+ 0)) linspace
+    let fftRes = fft imagCos
+    let realRes = map realPart fftRes
+    let zeros = replicate elemCount 0
+    let expected = setElem (setElem zeros (elemCount - 1) halfElemCount) 1 halfElemCount
+    assertBool "dft naive cos fails" $ allClose realRes expected 0.001
+
 main :: IO Counts
 main = do
     -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
@@ -138,4 +164,7 @@ main = do
                           testDftIdftNaive1,
                           testDistFromPow2,
                           testPadPow2,
-                          testDftIdftNaivePadded]
+                          testDftIdftNaivePadded,
+                          testEvenIdxs,
+                          testOddIdxs,
+                          testFft1]

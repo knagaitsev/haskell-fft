@@ -1,4 +1,11 @@
-module HaskellFFT.Util (allClose, createLinspace, getElem, setElem, distFromPow2, padPow2) where
+module HaskellFFT.Util (allClose,
+                        createLinspace,
+                        getElem,
+                        setElem,
+                        distFromPow2,
+                        padPow2,
+                        evenIdxs,
+                        oddIdxs) where
 
 allClose :: (Ord a, Num a) => [a] -> [a] -> a -> Bool
 allClose [] [] _ = True
@@ -42,3 +49,15 @@ padPow2 :: [a] -> a -> [a]
 padPow2 x padVal = do
     let dist = distFromPow2(length x)
     pad x padVal dist
+
+idxsMod2CompIter :: Int -> Int -> [a] -> [a]
+idxsMod2CompIter _ _ [] = []
+idxsMod2CompIter curr comp (x:xs)
+    | (mod curr 2) == comp = x : (idxsMod2CompIter (curr + 1) comp xs)
+    | otherwise = (idxsMod2CompIter (curr + 1) comp xs)
+
+evenIdxs :: [a] -> [a]
+evenIdxs = idxsMod2CompIter 0 0
+
+oddIdxs :: [a] -> [a]
+oddIdxs = idxsMod2CompIter 0 1
