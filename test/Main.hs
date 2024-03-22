@@ -37,6 +37,20 @@ testGetElem3 = TestCase $ do
     let x = [5, 3, 7, 2]
     assertEqual "getElem gets element at index" (getElem x 4) (Nothing)
 
+testSetElem1 :: Test
+testSetElem1 = TestCase $ do
+    let x = [5, 3, 7, 2]
+    let new = setElem x 2 4
+    let expected = [5, 3, 4, 2]
+    assertEqual "setElem sets new value in list" new expected
+
+testSetElem2 :: Test
+testSetElem2 = TestCase $ do
+    let x = [5, 3, 7, 2]
+    let new = setElem x 0 1
+    let expected = [1, 3, 7, 2]
+    assertEqual "setElem sets new value in list" new expected
+
 testDftNaive1 :: Test
 testDftNaive1 = TestCase $ do
     let elemCount = 100
@@ -81,5 +95,7 @@ main = do
                           testGetElem1,
                           testGetElem2,
                           testGetElem3,
+                          testSetElem1,
+                          testSetElem2,
                           testDftNaive1,
                           testDftNaive2]

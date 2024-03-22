@@ -1,4 +1,4 @@
-module HaskellFFT.Util (allClose, createLinspace, getElem) where
+module HaskellFFT.Util (allClose, createLinspace, getElem, setElem) where
 
 allClose :: (Ord a, Num a) => [a] -> [a] -> a -> Bool
 allClose [] [] _ = True
@@ -21,3 +21,8 @@ getElemIter (x:xs) n i = getElemIter xs n (i - 1)
 
 getElem :: [a] -> Int -> Maybe a
 getElem xs n = getElemIter xs n n
+
+setElem :: [a] -> Int -> a -> [a]
+setElem [] _ _ = []
+setElem (_:xs) 0 v = v : xs
+setElem (x:xs) n v = x : (setElem xs (n - 1) v)
