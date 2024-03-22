@@ -1,4 +1,4 @@
-module HaskellFFT.Util (allClose, createLinspace) where
+module HaskellFFT.Util (allClose, createLinspace, getElem) where
 
 allClose :: (Ord a, Num a) => [a] -> [a] -> a -> Bool
 allClose [] [] _ = True
@@ -13,3 +13,11 @@ createLinspaceIter n tot a b = do
 
 createLinspace :: RealFloat a => Int -> a -> a -> [a]
 createLinspace n = createLinspaceIter n n
+
+getElemIter :: [a] -> Int -> Int -> Maybe a
+getElemIter [] _ _ = Nothing
+getElemIter (x:xs) n 0 = Just x
+getElemIter (x:xs) n i = getElemIter xs n (i - 1)
+
+getElem :: [a] -> Int -> Maybe a
+getElem xs n = getElemIter xs n n
