@@ -1,4 +1,4 @@
-module HaskellFFT (dftNaive, fft) where
+module HaskellFFT.FFT (dftNaive, fft) where
 
 import Data.Complex
 
