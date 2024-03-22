@@ -68,8 +68,12 @@ testDftNaive2 = TestCase $ do
 main :: IO Counts
 main = do
     -- putStrLn $ show $ dftNaive [0 :+ 0, 1 :+ 0, 0 :+ 0]
-    -- let x = createLinspace 5 0 (2 * pi)
-    -- putStrLn $ show x
+    -- let linspace = createLinspace 10 0 (2 * pi)
+    -- let imag = map (\x -> (cos(3 * x) :+ 0)) linspace
+    let imag = [0, 0, 1, 0]
+    let res1 = dftNaive imag
+    let res2 = idftNaive res1
+    putStrLn $ show res2
     runTestTT $ TestList [testAllClose1,
                           testAllClose2,
                           testAllClose3,
