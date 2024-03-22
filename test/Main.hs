@@ -57,13 +57,11 @@ testDftNaive1 = TestCase $ do
     let halfElemCount = 0.5 * fromIntegral elemCount
     let linspace = createLinspace elemCount 0 (2 * pi)
     let imagCos = map (\x -> (cos(x) :+ 0)) linspace
-    -- putStrLn $ show imagCos
     let dftRes = dftNaive imagCos
-    -- putStrLn $ show dftRes
-    let optVal = getElem dftRes 1
-    case optVal of
-        Just v -> assertBool "dft naive cos fails" $ allClose (pure halfElemCount) (pure $ realPart v) 0.001
-        Nothing -> assertFailure "idx out of range"
+    let realRes = map realPart dftRes
+    let zeros = replicate elemCount 0
+    let expected = setElem (setElem zeros (elemCount - 1) halfElemCount) 1 halfElemCount
+    assertBool "dft naive cos fails" $ allClose realRes expected 0.001
 
 testDftNaive2 :: Test
 testDftNaive2 = TestCase $ do
@@ -71,13 +69,11 @@ testDftNaive2 = TestCase $ do
     let halfElemCount = 0.5 * fromIntegral elemCount
     let linspace = createLinspace elemCount 0 (2 * pi)
     let imagCos = map (\x -> (cos(3 * x) :+ 0)) linspace
-    -- putStrLn $ show imagCos
     let dftRes = dftNaive imagCos
-    -- putStrLn $ show dftRes
-    let optVal = getElem dftRes 3
-    case optVal of
-        Just v -> assertBool "dft naive cos fails" $ allClose (pure halfElemCount) (pure $ realPart v) 0.001
-        Nothing -> assertFailure "idx out of range"
+    let realRes = map realPart dftRes
+    let zeros = replicate elemCount 0
+    let expected = setElem (setElem zeros (elemCount - 3) halfElemCount) 3 halfElemCount
+    assertBool "dft naive cos fails" $ allClose realRes expected 0.001
 
 main :: IO Counts
 main = do
@@ -87,7 +83,7 @@ main = do
     let imag = [0, 0, 1, 0]
     let res1 = dftNaive imag
     let res2 = idftNaive res1
-    putStrLn $ show res2
+    -- putStrLn $ show res2
     runTestTT $ TestList [testAllClose1,
                           testAllClose2,
                           testAllClose3,
